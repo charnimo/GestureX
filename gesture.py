@@ -1,3 +1,4 @@
+# gesture.py
 import math
 from config import CLICK_PINCH_THRESHOLD
 
@@ -32,6 +33,11 @@ def classify_gesture(landmarks):
         (landmarks[4].x, landmarks[4].y, landmarks[4].z),
         (landmarks[8].x, landmarks[8].y, landmarks[8].z),
     )
+    thumb_index_ok = pinch_dist < (CLICK_PINCH_THRESHOLD * 0.92)
+
+    if thumb_index_ok and middle_ext and ring_ext and pinky_ext:
+        return "OK"
+
     if pinch_dist < CLICK_PINCH_THRESHOLD:
         return "PINCH"
 
@@ -50,7 +56,10 @@ def classify_gesture(landmarks):
     if index_ext and middle_ext and ring_curled and pinky_curled:
         return "PEACE"
 
-    if index_ext and middle_ext and ring_curled and pinky_curled:
-        return "PEACE"
+    if index_ext and middle_ext and ring_ext and pinky_curled:
+        return "THREE"
+
+    if index_ext and (not middle_ext) and (not ring_ext) and pinky_ext:
+        return "ROCK"
 
     return "UNKNOWN"
